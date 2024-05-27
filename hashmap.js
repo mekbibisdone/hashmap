@@ -117,6 +117,36 @@ export default function HashMap(){
     }
     return false
   }
+  function remove(key){
+    const result = has(key)
+    if (result == false){
+      return result
+    }
+    const hashCode = hash(key)
+    const linkedList = buckets[hashCode]
+    const head = linkedList.head
+    const headKey = Object.keys(head.pair)[0]
+    if (headKey === key){
+      if (head.nextNode !== null){
+        linkedList.head = head.nextNode
+      } else{
+        buckets[hashCode] = undefined
+      }
+      return true
+    }
+    let prevNode = head
+    let nextNode = head.nextNode
+    while(nextNode !== null){
+      if (Object.keys(nextNode.pair)[0] === key){
+        prevNode.nextNode = nextNode.nextNode
+        return true
+      }else{
+        prevNode = nextNode
+        nextNode = nextNode.nextNode
+      }
+    }
+    return false
+  }
   function increaseBucketSize(){
     let occupiedCount = 0;
     for (const bucket of buckets){
@@ -127,5 +157,5 @@ export default function HashMap(){
       buckets.push(...Array(16))
     }
   }
-  return {hash,set,get,has,getBuckets}
+  return {hash,set,get,has,remove,getBuckets}
 }

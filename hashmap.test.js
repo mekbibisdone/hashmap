@@ -148,3 +148,65 @@ describe("Has",() => {
         expect(has("Z")).toBe(true)
     })
 })
+
+describe("Remove", () => {
+    it("doesn't remove anything and returns false if the key is not found",() => {
+        const key = "abcde";
+        const {remove,set,has} = HashMap()
+        set(key,key)
+        const result = remove("a")
+        expect(has(key)).toBe(true)
+        expect(result).toBe(false)
+    })
+    it("removes the pair and returns true if the key is found at the head",() => {
+        const {remove,set,has} = HashMap()
+        const key = "abcde";
+        set(key,key)
+        const result = remove(key)
+        expect(has(key)).toBe(false)
+        expect(result).toBe(true)
+    })
+    it("removed the pair and returns true if the key is found at the head and there are more nodes after it",() => {
+        const {set,has,remove} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        const result = remove(key)
+        expect(has(key)).toBe(false)
+        expect(has(key2)).toBe(true)
+        expect(result).toBe(true)
+    })
+    it("removes the pair amd returns true if the key is found but it's not at the head of the bucket",() => {
+        const {set,has,remove} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        const result = remove(key2)
+        expect(has(key)).toBe(true)
+        expect(has(key2)).toBe(false)
+        expect(result).toBe(true)
+    })
+    it("removes the pair and returns true if the key is found but it's not at the head of the bucket and there's more node after it",() => {
+        const {set,has,hash,remove} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        const key3 = "pa"
+        const value3 = "I am yet another value"
+        set(key3,value3)
+        const result = remove(key2)
+        expect(has(key)).toBe(true)
+        expect(has(key2)).toBe(false)
+        expect(has(key3)).toBe(true)
+        expect(result).toBe(true)
+    })
+})
