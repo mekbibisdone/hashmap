@@ -108,3 +108,43 @@ describe("Get",() => {
         expect(get("Z")).toEqual({["Z"]:"hello"})
     })
 })
+
+describe("Has",() => {
+    it("returns false if the key is not found",() => {
+        const {has} = HashMap()
+        expect(has("k")).toBe(false)
+    })
+    it("returns true if the key is found and there is only one bucket occupied", () => {
+        const key = "abcde";
+        const {has,set} = HashMap()
+        set(key,key)
+        expect(has(key)).toBe(true)
+    })
+    it("returns true if the key is found but it's not at the head of the bucket",() => {
+        const {set,has} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        expect(has(key2)).toBe(true)
+    })
+    it("returns false if the key is not found but has the same hashing as another key which occupies a bucket", () => {
+        const {set,has} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        expect(has(key2)).toBe(false)
+    })
+    it("returns true if the key is found there are multiple buckets occupied",() =>{
+        const {set,has} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        set("Z","hello")
+        expect(has("Z")).toBe(true)
+    })
+})
