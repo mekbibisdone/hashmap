@@ -88,6 +88,20 @@ export default function HashMap(){
 
     }
   }
+  function get(key){
+    const linkedList = buckets[hash(key)]
+    if (linkedList == undefined){
+      return null
+    }
+    let node =  linkedList.head
+    while(node !== null){
+      if (Object.keys(node.pair)[0] === key){
+        return node.pair
+      }else{
+        node = node.nextNode
+      }
+    }
+  }
   function increaseBucketSize(){
     let occupiedCount = 0;
     for (const bucket of buckets){
@@ -98,5 +112,5 @@ export default function HashMap(){
       buckets.push(...Array(16))
     }
   }
-  return {hash,set,getBuckets}
+  return {hash,set,get,getBuckets}
 }

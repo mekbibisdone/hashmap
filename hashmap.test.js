@@ -76,3 +76,35 @@ describe("Set",() => {
         expect(buckets.length).toBe(32)
     })
 })
+
+describe("Get",() => {
+    it("returns null if the key is not found",() => {
+        const {get} = HashMap()
+        expect(get("k")).toBeNull()
+    })
+    it("returns the correct pair if the key is found and there's only one occupied bucket",() => {
+        const key = "abcde";
+        const {get,set} = HashMap()
+        set(key,key)
+        expect(get(key)).toEqual({[key]:key})
+    })
+    it("returns the correct pair if the key is the bucket but not at the head of the bucket",() => {
+        const {set,hash,get} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        expect(get(key2)).toEqual({[key2]:value2})
+    })
+    it("returns the correct pair if key is found and multiple buckets are occupied", () => {
+        const {set,get} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        set("Z","hello")
+        expect(get("Z")).toEqual({["Z"]:"hello"})
+    })
+})
