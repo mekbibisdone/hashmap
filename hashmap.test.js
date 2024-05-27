@@ -26,3 +26,43 @@ describe("Hash", () =>{
         expect(hashCode).toBe(3)
     })
 })
+
+describe("Set",() => {
+
+
+    it("sets the key value pair when the bucket is empty", () => {
+        const {set,hash,getBuckets} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const buckets =  getBuckets()
+        const bucket = buckets[hash(key)]
+        expect(bucket.head.pair).toEqual({[key]:value})
+    } )
+
+    it("sets the key value pair to the next node when the bucket is occupied", () => {
+        const {set,hash,getBuckets} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        const buckets =  getBuckets()
+        const bucket = buckets[hash(key2)]
+        expect(bucket.head.nextNode.pair).toEqual({[key2]:value2})
+    })
+
+    it("replaces the value when a node has the same key", () => {
+        const {set,hash,getBuckets} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const newValue = "I am the new value"
+        set(key,newValue)
+        const buckets = getBuckets()
+        const bucket = buckets[hash(key)]
+        expect(bucket.head.pair).toEqual({[key]:newValue})
+    })
+    
+})
