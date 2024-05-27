@@ -4,7 +4,7 @@ export default function HashMap(){
     @returns {object} - An object containing a hash function
   */
   const buckets = Array(16)
-
+  const loadFactor = 0.75
   class LinkedList {
     size = 0;
     head = null;
@@ -67,6 +67,7 @@ export default function HashMap(){
     if (buckets[hashCode] === undefined){
       const linkedList = new LinkedList(key,value)
       buckets[hashCode] = linkedList
+      increaseBucketSize()
     } else {
       const linkedList = buckets[hashCode]
       let node =  linkedList.head
@@ -85,6 +86,16 @@ export default function HashMap(){
         linkedList.append(key,value)
       }
 
+    }
+  }
+  function increaseBucketSize(){
+    let occupiedCount = 0;
+    for (const bucket of buckets){
+      if (bucket !== undefined)
+        occupiedCount += 1
+    }
+    if(occupiedCount / buckets.length >= 0.75){
+      buckets.push(...Array(16))
     }
   }
   return {hash,set,getBuckets}

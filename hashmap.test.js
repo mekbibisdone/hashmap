@@ -65,4 +65,14 @@ describe("Set",() => {
         expect(bucket.head.pair).toEqual({[key]:newValue})
     })
     
+    it("increases the bucket length when all buckets are occupied",() => {
+        const {set,getBuckets} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        set("Z","hello")
+        const buckets = getBuckets()
+        expect(buckets.length).toBe(32)
+    })
 })
