@@ -206,4 +206,14 @@ describe("Remove", () => {
         expect(has(key3)).toBe(true)
         expect(result).toBe(true)
     })
+    it("removes the pair and returns true even after the buckets size has increased",() =>{
+        const {set,has,remove} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        const result = remove(String.fromCharCode(58))
+        expect(has(String.fromCharCode(58))).toBe(false)
+        expect(result).toBe(true)
+    })
 })
