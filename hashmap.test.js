@@ -217,3 +217,54 @@ describe("Remove", () => {
         expect(result).toBe(true)
     })
 })
+
+describe("Getting the number of stored keys", () => {
+    it("returns the correct number of stored keys when there is no bucket occupied",() => {
+        const {length} = HashMap()
+        expect(length()).toBe(0) 
+    })
+    it("returns the correct number of stored keys when only one bucket is occupied",()=>{
+        const key = "abcde";
+        const {set,length} = HashMap()
+        set(key,key)
+        expect(length()).toBe(1) 
+    })
+    it("returns the correct number of stored keys when only one bucket is occupied but there is more that one key in a bucket",()=>{
+        const {set,length} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        expect(length()).toBe(2)
+    })
+    it("returns the correct number of stored keys when a key is removed from the bucket that has two keys",() => {
+        const {set,remove,length} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        remove(key)
+        expect(length()).toBe(1)
+    })
+    it("returns the correct number of stored keys even after the bucket size has increased", () => {
+        const {set,length} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        expect(length()).toBe(keys.length)
+    })
+    it("returns the correct number of stored keys when multiple buckets are occupied and a keys has been removed",() =>{
+        const {set,length,remove} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        remove(String.fromCharCode(58))
+        expect(length()).toBe(keys.length - 1)
+    })
+})

@@ -129,6 +129,7 @@ export default function HashMap(){
     if (headKey === key){
       if (head.nextNode !== null){
         linkedList.head = head.nextNode
+        linkedList.size -= 1
       } else{
         buckets[hashCode] = undefined
       }
@@ -139,6 +140,7 @@ export default function HashMap(){
     while(nextNode !== null){
       if (Object.keys(nextNode.pair)[0] === key){
         prevNode.nextNode = nextNode.nextNode
+        linkedList.size -= 1
         return true
       }else{
         prevNode = nextNode
@@ -146,6 +148,15 @@ export default function HashMap(){
       }
     }
     return false
+  }
+  function length(){
+    let count = 0
+    for (const bucket of buckets){
+      if(bucket === undefined)
+        continue
+      count += bucket.size
+    }
+    return count
   }
   function increaseBucketSize(){
     let occupiedCount = 0;
@@ -166,5 +177,5 @@ export default function HashMap(){
       }  
     }
   }
-  return {hash,set,get,has,remove,getBuckets}
+  return {hash,set,get,has,remove,length,getBuckets}
 }
