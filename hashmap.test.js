@@ -292,3 +292,34 @@ describe("Clear all the entries", () => {
         expect(getBuckets()).toHaveLength(16)
     })
 })
+
+describe("Gets all the keys",() =>{
+    it("returns an empty list if there are no keys in any buckets", () => {
+        const {keys} = HashMap()
+        expect(keys()).toHaveLength(0)
+    })
+    it("returns the correct list of keys when there is one key in a bucket",() =>{
+        const key = "abcde";
+        const {set,keys} = HashMap()
+        set(key,key)
+        expect(keys()).toEqual([key]) 
+    })
+    it("returns the correct list of keys when there is more than one key a bucket", () => {
+        const {set,keys} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        expect(keys()).toEqual([key,key2])
+    })
+    it("returns the correct list of keys even after the buckets length has increased",() =>{
+        const {set,keys} = HashMap()
+        const keyList = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keyList) {
+            set(String.fromCharCode(key),key)
+        }
+        expect(keys()).toEqual(keyList.map(key => String.fromCharCode(key) ))
+    })
+})
