@@ -158,6 +158,13 @@ export default function HashMap(){
     }
     return count
   }
+  function clear(){
+    const totalKeys = length()
+    if (totalKeys === 0){
+      return
+    }
+    buckets = Array(16)
+  }
   function increaseBucketSize(){
     let occupiedCount = 0;
     for (const bucket of buckets){
@@ -177,5 +184,5 @@ export default function HashMap(){
       }  
     }
   }
-  return {hash,set,get,has,remove,length,getBuckets}
+  return {hash,set,get,has,remove,length,clear,getBuckets}
 }

@@ -268,3 +268,27 @@ describe("Getting the number of stored keys", () => {
         expect(length()).toBe(keys.length - 1)
     })
 })
+
+describe("Clear all the entries", () => {
+    it("doesn't do anything if all the buckets are unoccupied",() => {
+        const {length,clear,getBuckets} = HashMap()
+        const lengthBeforeClear = length()
+        const bucketSizeBeforeClear = getBuckets().length
+        clear()
+        const lengthAfterClear = length()
+        const bucketSizeAfterClear = getBuckets().length
+        expect(lengthAfterClear).toBe(lengthBeforeClear)
+        expect(bucketSizeAfterClear).toBe(bucketSizeBeforeClear)
+        
+    })
+    it("removes all the stored entries and reverts to original bucket size",() => {
+        const {set,length,clear,getBuckets} = HashMap()
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const key of keys) {
+            set(String.fromCharCode(key),key)
+        }
+        clear()
+        expect(length()).toBe(0)
+        expect(getBuckets()).toHaveLength(16)
+    })
+})
