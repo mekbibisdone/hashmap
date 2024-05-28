@@ -5,6 +5,8 @@ export default function HashMap(){
   */
   let buckets = Array(16)
   const loadFactor = 0.75
+  let totalEntry = 0
+
   class LinkedList {
     size = 0;
     head = null;
@@ -32,6 +34,7 @@ export default function HashMap(){
       this.size += 1;
     }
   }
+
   class Node {
     constructor(key,value){
       this.pair= {[key]:value}
@@ -67,6 +70,7 @@ export default function HashMap(){
     if (buckets[hashCode] === undefined){
       const linkedList = new LinkedList(key,value)
       buckets[hashCode] = linkedList
+      totalEntry += 1
       increaseBucketSize()
     } else {
       const linkedList = buckets[hashCode]
@@ -84,8 +88,8 @@ export default function HashMap(){
         node.pair[Object.keys(node.pair)[0]] = value
       }else{
         linkedList.append(key,value)
+        totalEntry += 1
       }
-
     }
   }
   function get(key){
@@ -134,6 +138,7 @@ export default function HashMap(){
       } else{
         buckets[hashCode] = undefined
       }
+      totalEntry -= 1
       return true
     }
     let prevNode = head
@@ -142,6 +147,7 @@ export default function HashMap(){
       if (Object.keys(nextNode.pair)[0] === key){
         prevNode.nextNode = nextNode.nextNode
         linkedList.size -= 1
+        totalEntry -= 1
         return true
       }else{
         prevNode = nextNode
@@ -151,13 +157,7 @@ export default function HashMap(){
     return false
   }
   function length(){
-    let count = 0
-    for (const bucket of buckets){
-      if(bucket === undefined)
-        continue
-      count += bucket.size
-    }
-    return count
+    return totalEntry
   }
   function clear(){
     const totalKeys = length()
@@ -165,6 +165,7 @@ export default function HashMap(){
       return
     }
     buckets = Array(16)
+    totalEntry = 0
   }
   function keys(){
     const keyList = []
