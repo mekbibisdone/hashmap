@@ -101,6 +101,7 @@ export default function HashMap(){
         node = node.nextNode
       }
     }
+    return null
   }
   function has(key){
     const linkedList = buckets[hash(key)]

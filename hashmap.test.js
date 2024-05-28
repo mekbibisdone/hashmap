@@ -87,7 +87,7 @@ describe("Get",() => {
         set(key,key)
         expect(get(key)).toEqual({[key]:key})
     })
-    it("returns the correct pair if the key is the bucket but not at the head of the bucket",() => {
+    it("returns the correct pair if the key is in the bucket but not at the head of the bucket",() => {
         const {set,hash,get} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -96,6 +96,14 @@ describe("Get",() => {
         const value2 = "I am a value"
         set(key2,value2)
         expect(get(key2)).toEqual({[key2]:value2})
+    })
+    it("returns null if the key's hash matches another's key hash but isn't stored",() => {
+        const {set,get} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        expect(get(key2)).toBeNull()
     })
     it("returns the correct pair if key is found even after the buckets size has increased", () => {
         const {set,get} = HashMap()
