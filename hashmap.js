@@ -178,6 +178,19 @@ export default function HashMap(){
     }
     return keyList
   }
+  function values(){
+    const valueList = []
+    for (const bucket of buckets){
+      if (bucket === undefined)
+        continue
+      let node = bucket.head
+      while(node !== null){
+        valueList.push(Object.values(node.pair)[0])
+        node = node.nextNode
+      }
+    }
+    return valueList
+  }
   function increaseBucketSize(){
     let occupiedCount = 0;
     for (const bucket of buckets){
@@ -197,5 +210,5 @@ export default function HashMap(){
       }  
     }
   }
-  return {hash,set,get,has,remove,length,clear,keys,getBuckets}
+  return {hash,set,get,has,remove,values,length,clear,keys,getBuckets}
 }
