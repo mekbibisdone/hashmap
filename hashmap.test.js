@@ -1,34 +1,33 @@
 import { it,expect, describe } from "vitest";
 import HashMap from "./hashmap";
 
-describe("Hash", () =>{
+describe("Getting the hash for a given key", () =>{
     const {hash} = HashMap();
 
     it("throws an error if the string passed has length zero", () => {
         const key = "";
         expect(() => hash(key)).toThrow("Key must have length greater than 0")
     })
-    it("returns the correct hashcode for passed string with length one",()=>{
+    it("returns the correct hash code for the passed string with a length of one",()=>{
         const key = "a";
         const hashCode = hash(key); 
         expect(hashCode).toBe(1)
     })
     
-    it("returns the correct hashcode for a passed string with length two",() => {
+    it("returns the correct hash code for a passed string with a length of two",() => {
         const key = "ab";
         const hashCode = hash(key); 
         expect(hashCode).toBe(1)
     })
 
-    it("returns the correct hashcode for a passed string with length five",() => {
+    it("returns the correct hash code for a passed string with a length of five",() => {
         const key = "abcde";
         const hashCode = hash(key);
         expect(hashCode).toBe(3)
     })
 })
 
-describe("Set",() => {
-
+describe("Adding a pair into a bucket",() => {
 
     it("sets the key value pair when the bucket is empty", () => {
         const {set,hash,getBuckets} = HashMap()
@@ -37,7 +36,8 @@ describe("Set",() => {
         set(key,value)
         const buckets =  getBuckets()
         const bucket = buckets[hash(key)]
-        expect(bucket.head.pair).toEqual({[key]:value})
+        const storedPair = bucket.head.pair
+        expect(storedPair).toEqual({[key]:value})
     } )
 
     it("sets the key value pair to the next node when the bucket is occupied", () => {
@@ -50,7 +50,8 @@ describe("Set",() => {
         set(key2,value2)
         const buckets =  getBuckets()
         const bucket = buckets[hash(key2)]
-        expect(bucket.head.nextNode.pair).toEqual({[key2]:value2})
+        const secondPair = bucket.head.nextNode.pair
+        expect(secondPair).toEqual({[key2]:value2})
     })
 
     it("replaces the value when a node has the same key", () => {
@@ -62,21 +63,22 @@ describe("Set",() => {
         set(key,newValue)
         const buckets = getBuckets()
         const bucket = buckets[hash(key)]
-        expect(bucket.head.pair).toEqual({[key]:newValue})
+        const storedPair = bucket.head.pair
+        expect(storedPair).toEqual({[key]:newValue})
     })
     
     it("increases the bucket length when all buckets are occupied",() => {
         const {set,getBuckets} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key =>String.fromCharCode(key) )
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         const buckets = getBuckets()
         expect(buckets).toHaveLength(32)
     })
 })
 
-describe("Get",() => {
+describe("Getting a stored pair that matches the passed key",() => {
     it("returns null if the key is not found",() => {
         const {get} = HashMap()
         expect(get("k")).toBeNull()
@@ -88,7 +90,7 @@ describe("Get",() => {
         expect(get(key)).toEqual({[key]:key})
     })
     it("returns the correct pair if the key is in the bucket but not at the head of the bucket",() => {
-        const {set,hash,get} = HashMap()
+        const {set,get} = HashMap()
         const key = "a"
         const value = "I am the old value"
         set(key,value)
@@ -107,15 +109,15 @@ describe("Get",() => {
     })
     it("returns the correct pair if key is found even after the buckets size has increased", () => {
         const {set,get} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key) )
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
-        expect(get(String.fromCharCode(59))).toEqual({[String.fromCharCode(59)]:59})
+        expect(get(String.fromCharCode(59))).toEqual({[String.fromCharCode(59)]:String.fromCharCode(59)})
     })
 })
 
-describe("Has",() => {
+describe("Checking if a pair is stored",() => {
     it("returns false if the key is not found",() => {
         const {has} = HashMap()
         expect(has("k")).toBe(false)
@@ -136,7 +138,7 @@ describe("Has",() => {
         set(key2,value2)
         expect(has(key2)).toBe(true)
     })
-    it("returns false if the key is not found but has the same hashing as another key which occupies a bucket", () => {
+    it("returns false if the key is not found but has the same hashing as another key which occupies the bucket", () => {
         const {set,has} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -146,15 +148,15 @@ describe("Has",() => {
     })
     it("returns true if the key is found even after the buckets size has increased",() =>{
         const {set,has} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         expect(has(String.fromCharCode(58))).toBe(true)
     })
 })
 
-describe("Remove", () => {
+describe("Removing a pair", () => {
     it("doesn't remove anything and returns false if the key is not found",() => {
         const key = "abcde";
         const {remove,set,has} = HashMap()
@@ -171,7 +173,7 @@ describe("Remove", () => {
         expect(has(key)).toBe(false)
         expect(result).toBe(true)
     })
-    it("removed the pair and returns true if the key is found at the head and there are more nodes after it",() => {
+    it("removes the pair and returns true if the key is found at the head and there are more nodes after it",() => {
         const {set,has,remove} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -198,7 +200,7 @@ describe("Remove", () => {
         expect(result).toBe(true)
     })
     it("removes the pair and returns true if the key is found but it's not at the head of the bucket and there's more node after it",() => {
-        const {set,has,hash,remove} = HashMap()
+        const {set,has,remove} = HashMap()
         const key = "a"
         const value = "I am the old value"
         set(key,value)
@@ -216,9 +218,9 @@ describe("Remove", () => {
     })
     it("removes the pair and returns true even after the buckets size has increased",() =>{
         const {set,has,remove} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         const result = remove(String.fromCharCode(58))
         expect(has(String.fromCharCode(58))).toBe(false)
@@ -237,7 +239,7 @@ describe("Getting the number of stored keys", () => {
         set(key,key)
         expect(length()).toBe(1) 
     })
-    it("returns the correct number of stored keys when only one bucket is occupied but there is more that one key in a bucket",()=>{
+    it("returns the correct number of stored keys when only one bucket is occupied but there is more than one key in a bucket",()=>{
         const {set,length} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -260,17 +262,17 @@ describe("Getting the number of stored keys", () => {
     })
     it("returns the correct number of stored keys even after the bucket size has increased", () => {
         const {set,length} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         expect(length()).toBe(keys.length)
     })
     it("returns the correct number of stored keys when multiple buckets are occupied and a keys has been removed",() =>{
         const {set,length,remove} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         remove(String.fromCharCode(58))
         expect(length()).toBe(keys.length - 1)
@@ -291,9 +293,9 @@ describe("Clear all the entries", () => {
     })
     it("removes all the stored entries and reverts to original bucket size",() => {
         const {set,length,clear,getBuckets} = HashMap()
-        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keys) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
         clear()
         expect(length()).toBe(0)
@@ -302,7 +304,7 @@ describe("Clear all the entries", () => {
 })
 
 describe("Gets all the keys",() =>{
-    it("returns an empty list if there are no keys in any buckets", () => {
+    it("returns an empty list if there are no keys", () => {
         const {keys} = HashMap()
         expect(keys()).toHaveLength(0)
     })
@@ -312,7 +314,7 @@ describe("Gets all the keys",() =>{
         set(key,key)
         expect(keys()).toEqual([key]) 
     })
-    it("returns the correct list of keys when there is more than one key a bucket", () => {
+    it("returns the correct list of keys when there is more than one key in a bucket", () => {
         const {set,keys} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -324,27 +326,27 @@ describe("Gets all the keys",() =>{
     })
     it("returns the correct list of keys even after the buckets length has increased",() =>{
         const {set,keys} = HashMap()
-        const keyList = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        const keyList = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
         for (const key of keyList) {
-            set(String.fromCharCode(key),key)
+            set(key,key)
         }
-        expect(keys()).toEqual(keyList.map(key => String.fromCharCode(key) ))
+        expect(keys()).toEqual(keyList)
     })
 })
 
 describe("Get all the values",()=>{
-    it("return an empty list when there is no entry in the buckets",() => {
+    it("return an empty list when there are value",() => {
         const {values} = HashMap()
         expect(values()).toHaveLength(0)
     })
-    it("returns the correct list of values when there is one entry in a bucket",() =>{
+    it("returns the correct list of values when there is one value in a bucket",() =>{
         const key = "abcde";
         const value = "hello"
         const {set,values} = HashMap()
         set(key,value)
         expect(values()).toEqual([value]) 
     })
-    it("returns the correct list of values when there is more than one entry in one bucket", () => {
+    it("returns the correct list of values when there is more than one value in one bucket", () => {
         const {set,values} = HashMap()
         const key = "a"
         const value = "I am the old value"
@@ -356,9 +358,9 @@ describe("Get all the values",()=>{
     })
     it("returns the correct list of values even after the buckets length has increased",() =>{
         const {set,values} = HashMap()
-        const valueList = [48,49,50,51,52,53,54,55,56,57,58,59,60]
-        for (const value of valueList) {
-            set(String.fromCharCode(value),value)
+        const valueList = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
+        for (const key of valueList) {
+            set(key,key)
         }
         expect(values()).toEqual(valueList)
     })
@@ -369,7 +371,7 @@ describe("Get all the pairs",()=>{
         const {entries} = HashMap()
         expect(entries()).toHaveLength(0)
     })
-    it("returns a list of a pair when there one bucket occupied",()=>{
+    it("returns a list of a pair when there is one bucket occupied",()=>{
         const key = "abcde";
         const value = "hello"
         const {set,entries} = HashMap()
@@ -388,10 +390,10 @@ describe("Get all the pairs",()=>{
     })
     it("returns the correct list of entries even after the buckets length has increased",() =>{
         const {set,entries} = HashMap()
-        const valueList = [48,49,50,51,52,53,54,55,56,57,58,59,60]
-        for (const value of valueList) {
-            set(String.fromCharCode(value),value)
+        const entryList = [48,49,50,51,52,53,54,55,56,57,58,59,60].map(key => String.fromCharCode(key))
+        for (const entry of entryList) {
+            set(entry,entry)
         }
-        expect(entries()).toEqual(valueList.map(value => [String.fromCharCode(value),value]))
+        expect(entries()).toEqual(entryList.map(entry => [entry,entry]))
     })
 })
