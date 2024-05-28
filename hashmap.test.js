@@ -71,9 +71,8 @@ describe("Set",() => {
         for (const key of keys) {
             set(String.fromCharCode(key),key)
         }
-        set("Z","hello")
         const buckets = getBuckets()
-        expect(buckets.length).toBe(32)
+        expect(buckets).toHaveLength(32)
     })
 })
 
@@ -98,14 +97,13 @@ describe("Get",() => {
         set(key2,value2)
         expect(get(key2)).toEqual({[key2]:value2})
     })
-    it("returns the correct pair if key is found and multiple buckets are occupied", () => {
+    it("returns the correct pair if key is found even after the buckets size has increased", () => {
         const {set,get} = HashMap()
         const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
         for (const key of keys) {
             set(String.fromCharCode(key),key)
         }
-        set("Z","hello")
-        expect(get("Z")).toEqual({["Z"]:"hello"})
+        expect(get(String.fromCharCode(59))).toEqual({[String.fromCharCode(59)]:59})
     })
 })
 
@@ -138,14 +136,13 @@ describe("Has",() => {
         const key2 = "ab"
         expect(has(key2)).toBe(false)
     })
-    it("returns true if the key is found there are multiple buckets occupied",() =>{
+    it("returns true if the key is found even after the buckets size has increased",() =>{
         const {set,has} = HashMap()
         const keys = [48,49,50,51,52,53,54,55,56,57,58,59,60]
         for (const key of keys) {
             set(String.fromCharCode(key),key)
         }
-        set("Z","hello")
-        expect(has("Z")).toBe(true)
+        expect(has(String.fromCharCode(58))).toBe(true)
     })
 })
 

@@ -3,7 +3,7 @@ export default function HashMap(){
     Creates a hash map
     @returns {object} - An object containing a hash function
   */
-  const buckets = Array(16)
+  let buckets = Array(16)
   const loadFactor = 0.75
   class LinkedList {
     size = 0;
@@ -153,8 +153,17 @@ export default function HashMap(){
       if (bucket !== undefined)
         occupiedCount += 1
     }
-    if(occupiedCount / buckets.length >= 0.75){
-      buckets.push(...Array(16))
+    if(occupiedCount / buckets.length >= loadFactor){
+      const prevBuckets = buckets
+      buckets = Array(prevBuckets.length*2)
+
+      for (const bucket of prevBuckets){
+        if(bucket !== undefined){
+          const head = bucket.head
+          const key = Object.keys(head.pair)[0]
+          buckets[hash(key)] = bucket
+        }
+      }  
     }
   }
   return {hash,set,get,has,remove,getBuckets}
