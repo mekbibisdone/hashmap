@@ -191,6 +191,13 @@ export default function HashMap(){
     }
     return valueList
   }
+  function entries(){
+    const keyList = keys()
+    const valueList = values()
+    const entryList = []
+    keyList.forEach((key,index) => entryList.push([key,valueList[index]]))
+    return entryList
+  }
   function increaseBucketSize(){
     let occupiedCount = 0;
     for (const bucket of buckets){
@@ -210,5 +217,5 @@ export default function HashMap(){
       }  
     }
   }
-  return {hash,set,get,has,remove,values,length,clear,keys,getBuckets}
+  return {hash,set,get,has,remove,length,clear,keys,values,entries,getBuckets}
 }

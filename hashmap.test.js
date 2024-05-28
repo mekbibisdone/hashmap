@@ -355,3 +355,35 @@ describe("Get all the values",()=>{
         expect(values()).toEqual(valueList)
     })
 })
+
+describe("Get all the pairs",()=>{
+    it("returns an empty list when there is no entry in the buckets",() => {
+        const {entries} = HashMap()
+        expect(entries()).toHaveLength(0)
+    })
+    it("returns a list of a pair when there one bucket occupied",()=>{
+        const key = "abcde";
+        const value = "hello"
+        const {set,entries} = HashMap()
+        set(key,value)
+        expect(entries()).toEqual([[key,value]]) 
+    })
+    it("returns the correct list of entries when there is more than one entry in one bucket", () => {
+        const {set,entries} = HashMap()
+        const key = "a"
+        const value = "I am the old value"
+        set(key,value)
+        const key2 = "ab"
+        const value2 = "I am a value"
+        set(key2,value2)
+        expect(entries()).toEqual([[key,value],[key2,value2]])
+    })
+    it("returns the correct list of entries even after the buckets length has increased",() =>{
+        const {set,entries} = HashMap()
+        const valueList = [48,49,50,51,52,53,54,55,56,57,58,59,60]
+        for (const value of valueList) {
+            set(String.fromCharCode(value),value)
+        }
+        expect(entries()).toEqual(valueList.map(value => [String.fromCharCode(value),value]))
+    })
+})
